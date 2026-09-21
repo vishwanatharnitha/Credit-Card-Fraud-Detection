@@ -20,7 +20,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ParticleField } from "@/components/fraud/particle-field";
 import { Badge } from "@/components/ui/badge";
@@ -182,7 +182,8 @@ function Overview({ transactions, volume, blocked, flagged, threat, onOpenStream
           <div className="mb-5 flex items-center justify-between"><div><p className="font-mono text-[10px] uppercase text-primary">Network throughput</p><h2 className="mt-1 text-lg font-semibold">Transaction volume / time</h2></div><Badge variant="outline" className="border-emerald-400/25 text-emerald-400"><Radio className="mr-1 size-3 animate-pulse" /> Live</Badge></div>
           <ClientOnly fallback={<div className="h-72 animate-pulse bg-muted/30" />}>
             <div className="h-72 w-full">
-              <AreaChart width={900} height={288} data={chartData} margin={{ top: 12, right: 10, left: -12, bottom: 0 }}>
+              <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 12, right: 10, left: -12, bottom: 0 }}>
                 <defs><linearGradient id="goldArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--primary)" stopOpacity={0.42} /><stop offset="100%" stopColor="var(--primary)" stopOpacity={0} /></linearGradient></defs>
                 <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 6" />
                 <XAxis dataKey="time" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
@@ -190,6 +191,7 @@ function Overview({ transactions, volume, blocked, flagged, threat, onOpenStream
                 <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "4px" }} formatter={(value) => [money(Number(value)), "Volume"]} />
                 <Area type="monotone" dataKey="volume" stroke="var(--primary)" strokeWidth={2} fill="url(#goldArea)" />
               </AreaChart>
+              </ResponsiveContainer>
             </div>
           </ClientOnly>
         </div>
