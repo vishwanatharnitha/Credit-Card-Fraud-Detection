@@ -8,8 +8,8 @@
 
 ## FinShield upgrade
 
-- [ ] Add shared in-browser ML scoring and threshold analytics
-- [ ] Rebrand and upgrade Overview and Live Stream controls
-- [ ] Add persistent single-vector and CSV batch diagnostics
-- [ ] Extend authoritative backend blocking rules
-- [ ] Verify production build, interactions, and responsive layouts
+- [x] Add shared in-browser ML scoring and threshold analytics
+- [x] Rebrand and upgrade Overview and Live Stream controls
+- [x] Add persistent single-vector and CSV batch diagnostics
+- [x] Extend authoritative backend blocking rules
+- [x] Verify production build, interactions, and responsive layouts
