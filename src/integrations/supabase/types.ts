@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      monitored_transactions: {
+        Row: {
+          amount: number
+          card_holder: string
+          id: string
+          location: string
+          pca_vectors: Json
+          risk_score: number
+          status: string
+          timestamp: string
+        }
+        Insert: {
+          amount: number
+          card_holder: string
+          id?: string
+          location: string
+          pca_vectors?: Json
+          risk_score: number
+          status: string
+          timestamp?: string
+        }
+        Update: {
+          amount?: number
+          card_holder?: string
+          id?: string
+          location?: string
+          pca_vectors?: Json
+          risk_score?: number
+          status?: string
+          timestamp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
