@@ -1,5 +1,5 @@
-import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { ClientOnly, createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Activity,
@@ -96,18 +96,18 @@ function statusStyle(status: string) {
 
 function FraudCommandCenter() {
   const { data: transactions } = useSuspenseQuery(transactionsQuery);
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     const channel = supabase
       .channel("monitored-transactions-feed")
       .on("postgres_changes", { event: "*", schema: "public", table: "monitored_transactions" }, () => {
-        void router.invalidate();
+        void queryClient.invalidateQueries({ queryKey: transactionsQuery.queryKey });
       })
       .subscribe();
     return () => { void supabase.removeChannel(channel); };
-  }, [router]);
+  }, [queryClient]);
 
   const blocked = transactions.filter((transaction) => transaction.status === "Blocked").length;
   const flagged = transactions.filter((transaction) => transaction.status === "Flagged").length;
@@ -189,7 +189,7 @@ function Overview({ transactions, volume, blocked, flagged, threat, onOpenStream
                 <XAxis dataKey="time" stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--muted-foreground)" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `$${Math.round(value / 1000)}k`} />
                 <Tooltip contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "4px" }} formatter={(value) => [money(Number(value)), "Volume"]} />
-                <Area type="monotone" dataKey="volume" stroke="var(--primary)" strokeWidth={2} fill="url(#goldArea)" />
+                <Area type="monotone" dataKey="volume" stroke="var(--primary)" strokeWidth={3} fill="url(#goldArea)" dot={{ r: 2, fill: "var(--primary)" }} activeDot={{ r: 5 }} isAnimationActive={false} />
               </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -222,7 +222,7 @@ function TransactionStream({ transactions }: { transactions: Transaction[] }) {
 
 function RiskSandbox() {
   const analyze = useServerFn(analyzeTransaction);
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [values, setValues] = useState(initialVector);
   const [result, setResult] = useState<{ riskScore: number; status: string } | null>(null);
   const [open, setOpen] = useState(false);
@@ -234,7 +234,7 @@ function RiskSandbox() {
       const response = await analyze({ data: values });
       setResult(response);
       setOpen(true);
-      await router.invalidate();
+      await queryClient.invalidateQueries({ queryKey: transactionsQuery.queryKey });
     } finally { setWorking(false); }
   };
 
