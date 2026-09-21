@@ -72,8 +72,7 @@ export const analyzeTransaction = createServerFn({ method: "POST" })
       V12: data.v12,
       V10: data.v10,
     };
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: transaction, error } = await supabaseAdmin
+    const { data: transaction, error } = await createPublicClient()
       .from("monitored_transactions")
       .insert({
         card_holder: "Sandbox Vector",
